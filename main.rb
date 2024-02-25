@@ -29,12 +29,13 @@ class HashMap
   end
 
   def run
-    set('Jerry', 'I am the old value.')
-    set('Jerry', 'I am the new value.')
-    set('Mogu', 'I am a dog.')
-    # 'I am the old value.'
-    # 'I am the new value.'
-    p @buckets
+     set('Jerry', 'I am the old value.')
+     set('Jerry', 'I am the new value.')
+     set('Jerryl', 'I should be incremented.')
+     set('Jerrym', 'I should not be here.')
+     set('Mogu', 'I am a dog.')
+
+     p @buckets
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -49,29 +50,36 @@ class HashMap
 
   # 2 arguments value assigned to key
 
-  # overwrite value if key exists
-    # if key == value 
-    # update the value
-    # set instance variable to node
-    # check node at index position 
-    # set to node
+  # overwrite value if key exists or is empty
 
   # check if there is enough room to add to table 
     # if not trigger rebuild operation
 
   # handle collision
   # go up until we find an empty position or run out (increment address until empty function)
+
+  # what happens if we run out of room at end of index after incrementing?
   def set(key, value)
     p index = hash(key)
     @current_node = Node.new(key, value)
     @current_bucket = @buckets[index]
 
-    # if node is empty 
     if @buckets[index] == nil 
       @buckets[index] = @current_node
     elsif @current_node.key == @current_bucket.key
       @buckets[index] = @current_node
+    else
+      increment_bucket(index)
     end
+  end
+
+  def increment_bucket(index)
+    until @buckets[index] == nil 
+      index+=1
+    end
+
+    raise IndexError if index.negative? || index >= @buckets.length
+    @buckets[index] = @current_node
   end
 
   # Keep track of total number of buckets #capacity
