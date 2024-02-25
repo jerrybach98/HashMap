@@ -27,15 +27,14 @@ class HashMap
   end
 
   def run
-    p hash('Jerry')
-    p hash('Mogu')
-    p hash('Manon')
-    p hash('Manon')
+    set('Jerry', 'I am the new value.')
+    set('Mogu', 'I am a dog.')
+    # 'I am the old value.'
+    # 'I am the new value.'
+    p @buckets
   end
 
-# hash function takes key as input 
-# Use Hashcode to access bucket
-# handles strings
+# hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
   def hash(key)
     hash_code = 0
     prime_number = 31
@@ -46,12 +45,17 @@ class HashMap
   end
 
   # 2 arguments value assigned to key
-  # overwrite value of key exists
+
+  # overwrite value if key exists
+
   # check if there is enough room to add to table 
     # if not trigger rebuild operation
-  # go up until we find an empty position or run out
-  def set(key, value)
 
+  # go up until we find an empty position or run out (increment address until empty function)
+  def set(key, value)
+    p index = hash(key)
+
+    @buckets[index] = Node.new(key, value)
   end
 
   # Keep track of total number of buckets #capacity
@@ -90,6 +94,15 @@ class HashMap
 
   end
 
+end
+
+class Node
+  attr_accessor :key, :value
+
+  def initialize(key = nil, value = nil)
+    @key = key
+    @value = value
+  end
 end
 
 hash = HashMap.new
