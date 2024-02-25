@@ -24,9 +24,12 @@ class HashMap
 
   def initialize
     @buckets = Array.new(16, nil)
+    @current_node = nil
+    @current_bucket = nil
   end
 
   def run
+    set('Jerry', 'I am the old value.')
     set('Jerry', 'I am the new value.')
     set('Mogu', 'I am a dog.')
     # 'I am the old value.'
@@ -47,15 +50,28 @@ class HashMap
   # 2 arguments value assigned to key
 
   # overwrite value if key exists
+    # if key == value 
+    # update the value
+    # set instance variable to node
+    # check node at index position 
+    # set to node
 
   # check if there is enough room to add to table 
     # if not trigger rebuild operation
 
+  # handle collision
   # go up until we find an empty position or run out (increment address until empty function)
   def set(key, value)
     p index = hash(key)
+    @current_node = Node.new(key, value)
+    @current_bucket = @buckets[index]
 
-    @buckets[index] = Node.new(key, value)
+    # if node is empty 
+    if @buckets[index] == nil 
+      @buckets[index] = @current_node
+    elsif @current_node.key == @current_bucket.key
+      @buckets[index] = @current_node
+    end
   end
 
   # Keep track of total number of buckets #capacity
