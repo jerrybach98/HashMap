@@ -32,7 +32,8 @@ class HashMap
      set('Jerry', 'I am the old value.')
      set('Jerry', 'I am the new value.')
      set('Jerryl', 'I should be incremented.')
-     set('Jerrym', 'I should not be here.')
+     #set('Jerrym', 'I should be looped.')
+     #set('Jerrym', 'Loop and increment.')
      set('Mogu', 'I am a dog.')
 
      p @buckets
@@ -59,27 +60,39 @@ class HashMap
   # go up until we find an empty position or run out (increment address until empty function)
 
   # what happens if we run out of room at end of index after incrementing?
+    # loop hash table to beginning
   def set(key, value)
     p index = hash(key)
     @current_node = Node.new(key, value)
     @current_bucket = @buckets[index]
 
-    if @buckets[index] == nil 
-      @buckets[index] = @current_node
-    elsif @current_node.key == @current_bucket.key
-      @buckets[index] = @current_node
-    else
-      increment_bucket(index)
+    loop do
+      if @buckets[index] == nil # place key on first nil bucket 
+        @buckets[index] = @current_node
+        break
+      elsif @current_node.key == @current_bucket.key # if key is the same change the value
+        @buckets[index] = @current_node
+        break
+      end
+
+      #index = loop_through(index)
+      index = increment_bucket(index)
+      raise IndexError if index.negative? || index >= @buckets.length
     end
   end
 
   def increment_bucket(index)
-    until @buckets[index] == nil 
-      index+=1
-    end
+    #p "incremented"
+    return index+=1
+    
+  end
 
-    raise IndexError if index.negative? || index >= @buckets.length
-    @buckets[index] = @current_node
+  def loop_through(index)
+    if index == @buckets.length
+      index = 0
+    else 
+      index
+    end
   end
 
   # Keep track of total number of buckets #capacity
