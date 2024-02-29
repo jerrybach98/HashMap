@@ -26,15 +26,18 @@ class HashMap
     @buckets = Array.new(16, nil)
     @current_node = nil
     @current_bucket = nil
+    @index = nil
   end
 
   def run
      set('Jerry', 'I am the old value.')
      set('Jerry', 'I am the new value.')
      set('Jerryl', 'I should be incremented.')
-     #set('Jerrym', 'I should be looped.')
-     #set('Jerrym', 'Loop and increment.')
      set('Mogu', 'I am a dog.')
+     set('Jerryl', 'Increment and replace no loop.')
+     set('Jerrym', 'I should be looped.')
+     set('Mogu', 'New doggy.')
+     set('Jerrym', 'Loop and replace.')
 
      p @buckets
   end
@@ -62,30 +65,33 @@ class HashMap
   # what happens if we run out of room at end of index after incrementing?
     # loop hash table to beginning
   def set(key, value)
-    p index = hash(key)
-    @current_node = Node.new(key, value)
-    @current_bucket = @buckets[index]
-
+    p @index = hash(key) #hashes key into an index number
+    @current_node = Node.new(key, value) #store node in instance variable
+  
     loop do
-      if @buckets[index] == nil # place key on first nil bucket 
-        @buckets[index] = @current_node
-        break
-      elsif @current_node.key == @current_bucket.key # if key is the same change the value
-        @buckets[index] = @current_node
-        break
-      end
-
-      #index = loop_through(index)
-      index = increment_bucket(index)
-      raise IndexError if index.negative? || index >= @buckets.length
+      break if set_base_case(@index) == true #assigns key to bucket or increment index
+      @index = loop_through(@index) # loops to beginning 
+      raise IndexError if @index.negative? || @index >= @buckets.length
     end
   end
 
-  def increment_bucket(index)
-    #p "incremented"
-    return index+=1
-    
+  def set_base_case(index)
+    @current_bucket = @buckets[index]
+
+    if @buckets[index] == nil # place key on first nil bucket 
+      @buckets[index] = @current_node
+      return true
+    elsif @current_node.key == @current_bucket.key # if key is the same change the value
+      @buckets[index] = @current_node
+      return true
+    else
+      @index+=1
+    end
   end
+
+  #def increment_bucket(index)
+  #  return index+=1
+  #end
 
   def loop_through(index)
     if index == @buckets.length
