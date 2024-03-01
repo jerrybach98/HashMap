@@ -30,16 +30,24 @@ class HashMap
   end
 
   def run
-     set('Jerry', 'I am the old value.')
-     set('Jerry', 'I am the new value.')
-     set('Jerryl', 'I should be incremented.')
-     set('Mogu', 'I am a dog.')
-     set('Jerryl', 'Increment and replace no loop.')
-     set('Jerrym', 'I should be looped.')
-     set('Mogu', 'New doggy.')
-     set('Jerrym', 'Loop and replace.')
+    set('Jerry', 'I am the old value.')
+    set('Jerry', 'I am the new value.')
+    set('Jerryl', 'I should be incremented.')
+    set('Mogu', 'I am a dog.')
+    set('Jerryl', 'Increment and replace no loop.')
+    set('Jerrym', 'I should be looped.')
+    set('Mogu', 'New doggy.')
+    set('Jerryn', 'Loop and replace.')
+    set('Jerryo', 'Loop and replace.')
+    set('Jerryp', 'Loop and replace.')
+    set('Jerryq', 'Loop and replace.')
+    set('Jerryr', 'Loop and replace.')
+    set('Jerrys', 'Loop and replace.')
+    set('Jerryt', 'Loop and replace.')
+    set('Jerryu', 'Loop and replace.')
 
-     p @buckets
+    p @buckets
+    calculate_load_factor
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -89,10 +97,6 @@ class HashMap
     end
   end
 
-  #def increment_bucket(index)
-  #  return index+=1
-  #end
-
   def loop_through(index)
     if index == @buckets.length
       index = 0
@@ -106,6 +110,15 @@ class HashMap
     # load factor = number of entries / number of slots
   def rebuild 
   end 
+
+  def calculate_load_factor
+    p bucket_amt = @buckets.length
+    p entries = bucket_amt - @buckets.count(nil)
+    
+    
+    p load_factor = entries/bucket_amt.to_f
+
+  end
 
   # Get the key or return nil
   # Check original key and move up one until found?
