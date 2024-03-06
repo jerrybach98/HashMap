@@ -50,6 +50,7 @@ class HashMap
     p @buckets
     values
     entries
+    length
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -159,6 +160,7 @@ class HashMap
   # Return number of stored keys
   # count the array
   def length
+    puts "Stored keys in hash map: #{values.length}"
   end
 
   # Return array containing all values
