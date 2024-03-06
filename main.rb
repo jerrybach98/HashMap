@@ -1,3 +1,4 @@
+
 # Raise an error when trying to access out of bound index
   # raise IndexError if index.negative? || index >= @buckets.length
 # Create a hash map of 16 buckets
@@ -48,6 +49,7 @@ class HashMap
 
     p @buckets
     values
+    entries
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -179,6 +181,21 @@ class HashMap
 
   # Print contents and Return array containing each key,value. Example: [[first_key, first_value], [second_key, second_value]]
   def entries
+    buckets_entries = []
+
+    @buckets.each do |bucket|
+      bucket_entry = []
+      @current_bucket = bucket
+      if @current_bucket == nil
+        next
+      else
+        bucket_entry << @current_bucket.key
+        bucket_entry << @current_bucket.value
+        buckets_entries << bucket_entry
+      end
+    end
+
+    p buckets_entries
 
   end
 
