@@ -36,18 +36,18 @@ class HashMap
     set('Mogu', 'I am a dog.')
     set('Jerryl', 'Increment and replace no loop.')
     set('Jerrym', 'I should be looped.')
-    set('Mogu', 'New doggy.')
-    set('Jerryn', 'Loop and replace.')
-    set('Jerryo', 'Loop and replace.')
-    set('Jerryp', 'Loop and replace.')
-    set('Jerryq', 'Loop and replace.')
-    set('Jerryr', 'Loop and replace.')
-    set('Jerrys', 'Loop and replace.')
-    set('Jerryt', 'Loop and replace.')
-    set('Jerryu', 'Loop and replace.')
+    # set('Mogu', 'New doggy.')
+    set('Jerrym', 'Loop and replace.')
+    # set('Jerryo', 'Loop and replace.')
+    # set('Jerryp', 'Loop and replace.')
+    # set('Jerryq', 'Loop and replace.')
+    # set('Jerryr', 'Loop and replace.')
+    # set('Jerrys', 'Loop and replace.')
+    # set('Jerryt', 'Loop and replace.')
+    # set('Jerryu', 'Loop and replace.')
 
     p @buckets
-    calculate_load_factor
+    values
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -109,6 +109,11 @@ class HashMap
   # check if load factor is > .75 then double buckets if true
     # load factor = number of entries / number of slots
   def rebuild 
+    p clone_buckets = Array.new(@buckets.length, nil)
+    double_buckets = @buckets += clone_buckets
+    p @buckets
+
+
   end 
 
   def calculate_load_factor
@@ -120,28 +125,55 @@ class HashMap
 
   end
 
-  # Get the key or return nil
-  # Check original key and move up one until found?
+  # Get the key and return value or return nil
+  # Check original key and move up one until found? just check from start
+  # add everything to an array?, check through that array of strings/nil so it's easier and not in node form 
   def get(key)
+    buckets_values = []
 
+    @buckets.each do |bucket|
+      @current_bucket = bucket
+      if @current_bucket == nil
+        next
+      elsif @current_bucket.key == key 
+        return @current_bucket.value
+      end
+    end
+      
   end
 
   # Return true or false if key exists
+  # just use include on the array
   def has(key)
 
   end
 
   # Remove entry with the key and return deleted value otherwise return nil
   # Use get then delete entry
+  # will be the only hard method logically
   def remove(key)
   end
 
   # Return number of stored keys
+  # count the array
   def length
   end
 
   # Return array containing all values
+  # add all the values to an array
   def values
+    buckets_values = []
+
+    @buckets.each do |bucket|
+      @current_bucket = bucket
+      if @current_bucket == nil
+        next
+      else
+        buckets_values << @current_bucket.value
+      end
+    end
+
+    p buckets_values
 
   end
 
