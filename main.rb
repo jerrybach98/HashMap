@@ -48,9 +48,13 @@ class HashMap
     # set('Jerryu', 'Loop and replace.')
 
     p @buckets
-    values
-    entries
+    p keys
+    p values
+    p entries
     length
+    has('Jerry')
+    has('Mogu')
+    has('Ted')
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -148,7 +152,8 @@ class HashMap
   # Return true or false if key exists
   # just use include on the array
   def has(key)
-
+    keys
+    p keys.include?(key)
   end
 
   # Remove entry with the key and return deleted value otherwise return nil
@@ -161,6 +166,27 @@ class HashMap
   # count the array
   def length
     puts "Stored keys in hash map: #{values.length}"
+  end
+
+  # removes all entries in the hash map.
+  def clear
+    
+  end
+
+  # returns an array containing all the keys inside the hash map
+  def keys
+    buckets_keys = []
+
+    @buckets.each do |bucket|
+      @current_bucket = bucket
+      if @current_bucket == nil
+        next
+      else
+        buckets_keys << @current_bucket.key
+      end
+    end
+
+    buckets_keys
   end
 
   # Return array containing all values
@@ -177,7 +203,7 @@ class HashMap
       end
     end
 
-    p buckets_values
+    buckets_values
 
   end
 
@@ -197,7 +223,7 @@ class HashMap
       end
     end
 
-    p buckets_entries
+    buckets_entries
 
   end
 
