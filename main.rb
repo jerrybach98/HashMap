@@ -1,14 +1,6 @@
-
-# Raise an error when trying to access out of bound index
-  # raise IndexError if index.negative? || index >= @buckets.length
 # Create a hash map of 16 buckets
 # Hash map does not preserve insertion order
 # put each key and value pair into a bucket as a node
-
-# 2 Approaches
-  # linked list approach/chaining implementation is reccomended but not required to deal with collision?
-    # buckets is an instance variable containing the array 
-    # Don't need to double buckets as linked list handles collision
 
 
   # linear approach/open addressing: place data in buckets, add index one linearly to hash value until empty ?
@@ -18,7 +10,6 @@
       # Rehasing: Double array and copy everything over
     # edge case: find a key/value that's been set further than original position with element before removed
 
-# What to look up: how to store/display as node
 
 
 class HashMap
@@ -53,8 +44,8 @@ class HashMap
     p entries
     length
     has('Jerry')
-    has('Mogu')
-    has('Ted')
+    p get('Jermy')
+    
   end
 
 # hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
@@ -79,6 +70,8 @@ class HashMap
 
   # what happens if we run out of room at end of index after incrementing?
     # loop hash table to beginning
+
+  # Raise an error when trying to access out of bound index
   def set(key, value)
     p @index = hash(key) #hashes key into an index number
     @current_node = Node.new(key, value) #store node in instance variable
@@ -134,18 +127,23 @@ class HashMap
 
   # Get the key and return value or return nil
   # Check original key and move up one until found? just check from start
-  # add everything to an array?, check through that array of strings/nil so it's easier and not in node form 
-  def get(key)
-    buckets_values = []
 
-    @buckets.each do |bucket|
-      @current_bucket = bucket
-      if @current_bucket == nil
+  # add everything to an array?, check through that array of strings/nil so it's easier and not in node form 
+  # each do entry, if array[0] == key then return array[1] if not then nil?
+  # return nil if array index == bucket amount?
+  def get(key)
+    p hash_entries = entries
+    value = nil 
+
+    hash_entries.each do |bucket|
+      if key == bucket[0]
+        value = bucket[1]
+      else
         next
-      elsif @current_bucket.key == key 
-        return @current_bucket.value
       end
     end
+
+    value
       
   end
 
@@ -170,7 +168,7 @@ class HashMap
 
   # removes all entries in the hash map.
   def clear
-    
+    @buckets = Array.new(16, nil)
   end
 
   # returns an array containing all the keys inside the hash map
