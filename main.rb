@@ -45,6 +45,10 @@ class HashMap
     length
     has('Jerry')
     p get('Jermy')
+
+    remove('Jerry')
+    p entries
+    p @buckets
     
   end
 
@@ -158,6 +162,17 @@ class HashMap
   # Use get then delete entry
   # will be the only hard method logically
   def remove(key)
+    @buckets.each_with_index do |bucket, index|
+      @current_bucket = bucket
+      if @current_bucket == nil
+        next
+      elsif @current_bucket.key != key
+        next
+      elsif @current_bucket.key == key
+        p @current_bucket.value
+        @buckets[index] = nil
+      end
+    end
   end
 
   # Return number of stored keys

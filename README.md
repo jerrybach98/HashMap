@@ -3,3 +3,4 @@ Hashmap implementation. Handles collisions with a linear approach and open addre
 
 Optimizations: 
 - Search hashmap starting from index location instead of beginning
+- Storing buckets as nodes also allows a linked list approach for collisions
