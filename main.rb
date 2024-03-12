@@ -27,28 +27,26 @@ class HashMap
     set('Jerryl', 'I should be incremented.')
     set('Mogu', 'I am a dog.')
     set('Jerryl', 'Increment and replace no loop.')
-    set('Jerrym', 'I should be looped.')
-    # set('Mogu', 'New doggy.')
     set('Jerrym', 'Loop and replace.')
-    # set('Jerryo', 'Loop and replace.')
-    # set('Jerryp', 'Loop and replace.')
-    # set('Jerryq', 'Loop and replace.')
-    # set('Jerryr', 'Loop and replace.')
-    # set('Jerrys', 'Loop and replace.')
-    # set('Jerryt', 'Loop and replace.')
-    # set('Jerryu', 'Loop and replace.')
+    set('Jerryp', 'Loop and add.')
+    set('Jerryq', 'Loop and add.')
+    set('Jerryr', 'Loop and add.')
+    set('Jerrys', 'Loop and add.')
+    set('Jerryt', 'Loop and add.')
+    set('Jerryu', 'Loop and add.')
+    set('Jerryv', 'Loop and add.')
+    set('Jerryx', 'Loop and add.')
+    set('Jerryy', 'test.')
+    set('Jerryo', 'I should be at end after load.')
+    set('Jerrym', 'I should be looped.')
+    set('Mogu', 'New doggy.')
+    set('ADDZAg', 'ADD.')
 
-    p @buckets
-    p keys
-    p values
-    p entries
+
     length
-    has('Jerry')
-    p get('Jermy')
-
-    remove('Jerry')
-    p entries
     p @buckets
+    p calculate_load_factor
+    p entries
     
   end
 
@@ -78,21 +76,30 @@ class HashMap
   # Raise an error when trying to access out of bound index
   def set(key, value)
     p @index = hash(key) #hashes key into an index number
-    @current_node = Node.new(key, value) #store node in instance variable
+    @current_node = Node.new(key, value) #store node in instance variable but not bucket yet
+    exists = get(key)
+    rebuild
+
   
     loop do
-      break if set_base_case(@index) == true #assigns key to bucket or increment index
+      break if set_base_case(@index, exists) == true #assigns key to bucket or increment index
       @index = loop_through(@index) # loops to beginning 
       raise IndexError if @index.negative? || @index >= @buckets.length
     end
   end
 
-  def set_base_case(index)
+  def set_base_case(index, exists)
     @current_bucket = @buckets[index]
+    #p @buckets[index]
+    #p "Current bucket: #{@current_bucket}"
+    #p "key value: #{exists}"
 
-    if @buckets[index] == nil # place key on first nil bucket 
+    if @buckets[index] == nil && exists == nil # place key on first nil bucket add a flag if bucket is nil and flag is false
       @buckets[index] = @current_node
       return true
+    elsif @buckets[index] == nil && exists != nil #prevents nil error, keeps incrementing if given hash value already exists in table
+      @index+=1
+      return
     elsif @current_node.key == @current_bucket.key # if key is the same change the value
       @buckets[index] = @current_node
       return true
@@ -113,19 +120,19 @@ class HashMap
   # check if load factor is > .75 then double buckets if true
     # load factor = number of entries / number of slots
   def rebuild 
-    p clone_buckets = Array.new(@buckets.length, nil)
-    double_buckets = @buckets += clone_buckets
-    p @buckets
+    load_factor = calculate_load_factor
 
-
+    if load_factor >= 0.75
+      clone_buckets = Array.new(@buckets.length, nil)
+      double_buckets = @buckets += clone_buckets
+      p @buckets
+    end
   end 
 
   def calculate_load_factor
-    p bucket_amt = @buckets.length
-    p entries = bucket_amt - @buckets.count(nil)
-    
-    
-    p load_factor = entries/bucket_amt.to_f
+    bucket_amt = @buckets.length
+    entries = bucket_amt - @buckets.count(nil)
+    load_factor = entries/bucket_amt.to_f
 
   end
 
@@ -136,7 +143,7 @@ class HashMap
   # each do entry, if array[0] == key then return array[1] if not then nil?
   # return nil if array index == bucket amount?
   def get(key)
-    p hash_entries = entries
+    hash_entries = entries
     value = nil 
 
     hash_entries.each do |bucket|
