@@ -1,5 +1,4 @@
 class HashMap
-
   def initialize
     @buckets = Array.new(16, nil)
     @current_node = nil
@@ -36,14 +35,13 @@ class HashMap
   #   p entries
   # end
 
-
-# Takes string or key and return index position between 0-15
+  # Takes string or key and return index position between 0-15
   def hash(key)
     hash_code = 0
     prime_number = 31
-       
-    key.each_char { |char| hash_code = (prime_number * hash_code + char.ord)%16 }
-       
+
+    key.each_char { |char| hash_code = (prime_number * hash_code + char.ord) % 16 }
+
     hash_code
   end
 
@@ -55,30 +53,29 @@ class HashMap
     exists = get(key)
     rebuild
 
-  
     loop do
-      break if set_base_case(@index, exists) == true 
+      break if set_base_case(@index, exists) == true
+
       @index = loop_through(@index)
       raise IndexError if @index.negative? || @index >= @buckets.length # out of bounds
     end
   end
 
-
-  # Checks for four conditions at each index position. Base case increments index position or assigns to first empty nil position. Increments and changes duplicate key values. 
+  # Checks for four conditions at each index position. Base case increments index position or assigns to first empty nil position. Increments and changes duplicate key values.
   def set_base_case(index, exists)
     @current_bucket = @buckets[index]
 
-    if @buckets[index] == nil && exists == nil 
+    if @buckets[index].nil? && exists.nil?
       @buckets[index] = @current_node
-      return true
-    elsif @buckets[index] == nil && exists != nil 
-      @index+=1
-      return
+      true
+    elsif @buckets[index].nil? && !exists.nil?
+      @index += 1
+      nil
     elsif @current_node.key == @current_bucket.key
       @buckets[index] = @current_node
-      return true
+      true
     else
-      @index+=1
+      @index += 1
     end
   end
 
@@ -86,46 +83,41 @@ class HashMap
   def loop_through(index)
     if index == @buckets.length
       index = 0
-    else 
+    else
       index
     end
   end
 
   # Doubles buckets if load factor is met
-  def rebuild 
+  def rebuild
     load_factor = calculate_load_factor
 
-    if load_factor >= 0.75
-      clone_buckets = Array.new(@buckets.length, nil)
-      double_buckets = @buckets += clone_buckets
-      p @buckets
-    end
-  end 
+    return unless load_factor >= 0.75
+
+    clone_buckets = Array.new(@buckets.length, nil)
+    double_buckets = @buckets += clone_buckets
+    p @buckets
+  end
 
   # Load factor = number of entries / number of slots available
   def calculate_load_factor
     bucket_amt = @buckets.length
     entries = bucket_amt - @buckets.count(nil)
-    load_factor = entries/bucket_amt.to_f
-
+    load_factor = entries / bucket_amt.to_f
   end
 
-  
   # Return value of a given key
   def get(key)
     hash_entries = entries
-    value = nil 
+    value = nil
 
     hash_entries.each do |bucket|
-      if key == bucket[0]
-        value = bucket[1]
-      else
-        next
-      end
+      next unless key == bucket[0]
+
+      value = bucket[1]
     end
 
     value
-      
   end
 
   # Return true or false if key exists
@@ -134,12 +126,11 @@ class HashMap
     p keys.include?(key)
   end
 
-
   # Remove key/value from bucket and return value
   def remove(key)
     @buckets.each_with_index do |bucket, index|
       @current_bucket = bucket
-      if @current_bucket == nil
+      if @current_bucket.nil?
         next
       elsif @current_bucket.key != key
         next
@@ -166,11 +157,9 @@ class HashMap
 
     @buckets.each do |bucket|
       @current_bucket = bucket
-      if @current_bucket == nil
-        next
-      else
-        buckets_keys << @current_bucket.key
-      end
+      next if @current_bucket.nil?
+
+      buckets_keys << @current_bucket.key
     end
 
     buckets_keys
@@ -182,15 +171,12 @@ class HashMap
 
     @buckets.each do |bucket|
       @current_bucket = bucket
-      if @current_bucket == nil
-        next
-      else
-        buckets_values << @current_bucket.value
-      end
+      next if @current_bucket.nil?
+
+      buckets_values << @current_bucket.value
     end
 
     buckets_values
-
   end
 
   # Print array of contents [[first_key, first_value], [second_key, second_value]]
@@ -200,19 +186,15 @@ class HashMap
     @buckets.each do |bucket|
       bucket_entry = []
       @current_bucket = bucket
-      if @current_bucket == nil
-        next
-      else
-        bucket_entry << @current_bucket.key
-        bucket_entry << @current_bucket.value
-        buckets_entries << bucket_entry
-      end
+      next if @current_bucket.nil?
+
+      bucket_entry << @current_bucket.key
+      bucket_entry << @current_bucket.value
+      buckets_entries << bucket_entry
     end
 
     buckets_entries
-
   end
-
 end
 
 # Store each pair as node in bucket
@@ -226,5 +208,4 @@ class Node
 end
 
 hash = HashMap.new
-#hash.run
-    
+# hash.run
