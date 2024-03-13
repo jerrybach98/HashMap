@@ -1,17 +1,3 @@
-# Create a hash map of 16 buckets
-# Hash map does not preserve insertion order
-# put each key and value pair into a bucket as a node
-
-
-  # linear approach/open addressing: place data in buckets, add index one linearly to hash value until empty ?
-    # Keep the original key?
-    # load factor = number of entries / number of slots
-    # double buckets? when load factor greater than .75
-      # Rehasing: Double array and copy everything over
-    # edge case: find a key/value that's been set further than original position with element before removed
-
-
-
 class HashMap
 
   def initialize
@@ -21,36 +7,37 @@ class HashMap
     @index = nil
   end
 
-  def run
-    set('Jerry', 'I am the old value.')
-    set('Jerry', 'I am the new value.')
-    set('Jerryl', 'I should be incremented.')
-    set('Mogu', 'I am a dog.')
-    set('Jerryl', 'Increment and replace no loop.')
-    set('Jerrym', 'Loop and replace.')
-    set('Jerryp', 'Loop and add.')
-    set('Jerryq', 'Loop and add.')
-    set('Jerryr', 'Loop and add.')
-    set('Jerrys', 'Loop and add.')
-    set('Jerryt', 'Loop and add.')
-    set('Jerryu', 'Loop and add.')
-    set('Jerryv', 'Loop and add.')
-    set('Jerryx', 'Loop and add.')
-    set('Jerryy', 'test.')
-    set('Jerryo', 'I should be at end after load.')
-    set('Jerrym', 'I should be looped.')
-    set('Mogu', 'New doggy.')
-    set('ADDZAg', 'ADD.')
+  # Debugging / manual testing
+  # def run
+  #   set('Jerry', 'I am the old value.')
+  #   set('Jerry', 'I am the new value.')
+  #   set('Jerryl', 'I should be incremented.')
+  #   set('Mogu', 'I am a dog.')
+  #   set('Jerryl', 'Increment and replace no loop.')
+  #   set('Jerrym', 'Loop and replace.')
+  #   set('Jerryp', 'Loop and add.')
+  #   set('Jerryq', 'Loop and add.')
+  #   set('Jerryr', 'Loop and add.')
+  #   set('Jerrys', 'Loop and add.')
+  #   set('Jerryt', 'Loop and add.')
+  #   set('Jerryu', 'Loop and add.')
+  #   set('Jerryv', 'Loop and add.')
+  #   set('Jerryx', 'Loop and add.')
+  #   set('Jerryy', 'test.')
+  #   set('Jerryo', 'I should be at end after load.')
+  #   set('Jerrym', 'I should be looped.')
+  #   set('Mogu', 'New doggy.')
+  #   set('ADDZAg', 'ADD.')
+  #   length
+  #   remove("Mogu")
+  #   remove("ADDZAg")
+  #   p @buckets
+  #   p calculate_load_factor
+  #   p entries
+  # end
 
 
-    length
-    p @buckets
-    p calculate_load_factor
-    p entries
-    
-  end
-
-# hash function takes key or string as input and returns hashcode (the array index of a bucket between 0-15)
+# Takes string or key and return index position between 0-15
   def hash(key)
     hash_code = 0
     prime_number = 31
@@ -60,47 +47,34 @@ class HashMap
     hash_code
   end
 
-  # 2 arguments value assigned to key
-
-  # overwrite value if key exists or is empty
-
-  # check if there is enough room to add to table 
-    # if not trigger rebuild operation
-
-  # handle collision
-  # go up until we find an empty position or run out (increment address until empty function)
-
-  # what happens if we run out of room at end of index after incrementing?
-    # loop hash table to beginning
-
-  # Raise an error when trying to access out of bound index
+  # Sets bucket as node, overwrites values, trigger rehash function, handles collisions
+  # Linear approach incrementing index position and looping to beginning
   def set(key, value)
-    p @index = hash(key) #hashes key into an index number
-    @current_node = Node.new(key, value) #store node in instance variable but not bucket yet
+    @index = hash(key)
+    @current_node = Node.new(key, value)
     exists = get(key)
     rebuild
 
   
     loop do
-      break if set_base_case(@index, exists) == true #assigns key to bucket or increment index
-      @index = loop_through(@index) # loops to beginning 
-      raise IndexError if @index.negative? || @index >= @buckets.length
+      break if set_base_case(@index, exists) == true 
+      @index = loop_through(@index)
+      raise IndexError if @index.negative? || @index >= @buckets.length # out of bounds
     end
   end
 
+
+  # Checks for four conditions at each index position. Base case increments index position or assigns to first empty nil position. Increments and changes duplicate key values. 
   def set_base_case(index, exists)
     @current_bucket = @buckets[index]
-    #p @buckets[index]
-    #p "Current bucket: #{@current_bucket}"
-    #p "key value: #{exists}"
 
-    if @buckets[index] == nil && exists == nil # place key on first nil bucket add a flag if bucket is nil and flag is false
+    if @buckets[index] == nil && exists == nil 
       @buckets[index] = @current_node
       return true
-    elsif @buckets[index] == nil && exists != nil #prevents nil error, keeps incrementing if given hash value already exists in table
+    elsif @buckets[index] == nil && exists != nil 
       @index+=1
       return
-    elsif @current_node.key == @current_bucket.key # if key is the same change the value
+    elsif @current_node.key == @current_bucket.key
       @buckets[index] = @current_node
       return true
     else
@@ -108,6 +82,7 @@ class HashMap
     end
   end
 
+  # Loop index to beginning when end of table is reached
   def loop_through(index)
     if index == @buckets.length
       index = 0
@@ -116,9 +91,7 @@ class HashMap
     end
   end
 
-  # Keep track of total number of buckets #capacity
-  # check if load factor is > .75 then double buckets if true
-    # load factor = number of entries / number of slots
+  # Doubles buckets if load factor is met
   def rebuild 
     load_factor = calculate_load_factor
 
@@ -129,6 +102,7 @@ class HashMap
     end
   end 
 
+  # Load factor = number of entries / number of slots available
   def calculate_load_factor
     bucket_amt = @buckets.length
     entries = bucket_amt - @buckets.count(nil)
@@ -136,12 +110,8 @@ class HashMap
 
   end
 
-  # Get the key and return value or return nil
-  # Check original key and move up one until found? just check from start
-
-  # add everything to an array?, check through that array of strings/nil so it's easier and not in node form 
-  # each do entry, if array[0] == key then return array[1] if not then nil?
-  # return nil if array index == bucket amount?
+  
+  # Return value of a given key
   def get(key)
     hash_entries = entries
     value = nil 
@@ -159,15 +129,13 @@ class HashMap
   end
 
   # Return true or false if key exists
-  # just use include on the array
   def has(key)
     keys
     p keys.include?(key)
   end
 
-  # Remove entry with the key and return deleted value otherwise return nil
-  # Use get then delete entry
-  # will be the only hard method logically
+
+  # Remove key/value from bucket and return value
   def remove(key)
     @buckets.each_with_index do |bucket, index|
       @current_bucket = bucket
@@ -183,17 +151,16 @@ class HashMap
   end
 
   # Return number of stored keys
-  # count the array
   def length
     puts "Stored keys in hash map: #{values.length}"
   end
 
-  # removes all entries in the hash map.
+  # Removes all hashmap entries
   def clear
     @buckets = Array.new(16, nil)
   end
 
-  # returns an array containing all the keys inside the hash map
+  # Array containing all keys
   def keys
     buckets_keys = []
 
@@ -209,8 +176,7 @@ class HashMap
     buckets_keys
   end
 
-  # Return array containing all values
-  # add all the values to an array
+  # Array containing all values
   def values
     buckets_values = []
 
@@ -227,7 +193,7 @@ class HashMap
 
   end
 
-  # Print contents and Return array containing each key,value. Example: [[first_key, first_value], [second_key, second_value]]
+  # Print array of contents [[first_key, first_value], [second_key, second_value]]
   def entries
     buckets_entries = []
 
@@ -249,6 +215,7 @@ class HashMap
 
 end
 
+# Store each pair as node in bucket
 class Node
   attr_accessor :key, :value
 
@@ -259,5 +226,5 @@ class Node
 end
 
 hash = HashMap.new
-hash.run
+#hash.run
     
